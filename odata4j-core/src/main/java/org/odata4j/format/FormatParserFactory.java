@@ -8,6 +8,7 @@ import org.odata4j.core.OEntity;
 import org.odata4j.core.OError;
 import org.odata4j.core.OObject;
 import org.odata4j.core.OSimpleObject;
+import org.odata4j.exceptions.UnsupportedMediaTypeException;
 import org.odata4j.format.json.JsonCollectionFormatParser;
 import org.odata4j.format.json.JsonComplexObjectFormatParser;
 import org.odata4j.format.json.JsonEntityFormatParser;
@@ -19,8 +20,8 @@ import org.odata4j.format.json.JsonSingleLinkFormatParser;
 import org.odata4j.format.xml.AtomEntryFormatParser;
 import org.odata4j.format.xml.AtomErrorFormatParser;
 import org.odata4j.format.xml.AtomFeedFormatParser;
+import org.odata4j.format.xml.AtomSimpleObjectFormatParser;
 import org.odata4j.format.xml.AtomSingleLinkFormatParser;
-import org.odata4j.producer.exceptions.UnsupportedMediaTypeException;
 
 public class FormatParserFactory {
 
@@ -158,7 +159,7 @@ public class FormatParserFactory {
 
     @Override
     public FormatParser<OSimpleObject<?>> getSimpleObjectFormatParser(Settings settings) {
-      throw new UnsupportedOperationException("Not supported yet.");
+      return new AtomSimpleObjectFormatParser(settings);
     }
 
     @Override

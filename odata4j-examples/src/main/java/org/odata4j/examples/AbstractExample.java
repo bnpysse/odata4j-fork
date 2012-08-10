@@ -1,9 +1,7 @@
 package org.odata4j.examples;
 
 import org.core4j.Enumerable;
-import org.odata4j.consumer.ODataClientException;
 import org.odata4j.consumer.ODataConsumer;
-import org.odata4j.consumer.ODataServerException;
 import org.odata4j.core.OEntity;
 import org.odata4j.core.OError;
 import org.odata4j.core.OProperty;
@@ -33,6 +31,8 @@ public abstract class AbstractExample {
 
   protected static void reportEntity(String caption, OEntity entity) {
     report(caption);
+    if (entity.getEntityTag() != null)
+      report("  ETag: %s", entity.getEntityTag());
     for (OProperty<?> p : entity.getProperties()) {
       Object v = p.getValue();
       if (p.getType().equals(EdmSimpleType.BINARY) && v != null)
@@ -41,7 +41,7 @@ public abstract class AbstractExample {
     }
   }
 
-  protected static int reportEntities(ODataConsumer c, String entitySetHref, int limit) throws ODataServerException, ODataClientException {
+  protected static int reportEntities(ODataConsumer c, String entitySetHref, int limit) {
     report("entitySetHref: " + entitySetHref);
     Enumerable<OEntity> entities = c.getEntities(entitySetHref).execute().take(limit);
     return reportEntities(entitySetHref, entities);
@@ -72,6 +72,8 @@ public abstract class AbstractExample {
 
       if (property.getStoreGeneratedPattern() != null)
         p = p + " StoreGeneratedPattern=" + property.getStoreGeneratedPattern();
+      if (property.getConcurrencyMode() != null)
+        p = p + " ConcurrencyMode=" + property.getConcurrencyMode();
 
       if (property.getFcTargetPath() != null)
         p = p + " TargetPath=" + property.getFcTargetPath();
@@ -90,7 +92,7 @@ public abstract class AbstractExample {
   protected static void reportMetadata(EdmDataServices services) {
 
     for (EdmSchema schema : services.getSchemas()) {
-      report("Schema Namespace=%s", schema.getNamespace());
+      report("Schema Namespace=%s, Alias=%s", schema.getNamespace(), schema.getAlias());
 
       for (EdmEntityType et : schema.getEntityTypes()) {
         String ets = String.format("  EntityType Name=%s", et.getName());

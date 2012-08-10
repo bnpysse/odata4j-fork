@@ -26,15 +26,15 @@ import org.odata4j.core.OEntity;
 import org.odata4j.core.OEntityIds;
 import org.odata4j.core.OEntityKey;
 import org.odata4j.edm.EdmEntitySet;
+import org.odata4j.exceptions.BadRequestException;
+import org.odata4j.exceptions.MethodNotAllowedException;
+import org.odata4j.exceptions.NotFoundException;
 import org.odata4j.format.FormatWriter;
 import org.odata4j.format.FormatWriterFactory;
 import org.odata4j.producer.EntityQueryInfo;
 import org.odata4j.producer.EntityResponse;
 import org.odata4j.producer.ODataProducer;
 import org.odata4j.producer.OMediaLinkExtension;
-import org.odata4j.producer.exceptions.BadRequestException;
-import org.odata4j.producer.exceptions.MethodNotAllowedException;
-import org.odata4j.producer.exceptions.NotFoundException;
 
 @Path("{entitySetName: [^/()]+?}{id: \\(.+?\\)}")
 public class EntityRequestResource extends BaseResource {
@@ -54,7 +54,7 @@ public class EntityRequestResource extends BaseResource {
     // is this a new media resource?
     // check for HasStream
     EdmEntitySet entitySet = producer.getMetadata().findEdmEntitySet(entitySetName);
-    if (null == entitySet) {
+    if (entitySet == null) {
       throw new NotFoundException();
     }
 
@@ -73,7 +73,7 @@ public class EntityRequestResource extends BaseResource {
   /**
    * update an entity given a String payload.
    * Note: currently this exists because EntitiesRequestResource processBatch needs
-   *       a version with a String payload.  It may be possible (desirable?) to 
+   *       a version with a String payload.  It may be possible (desirable?) to
    *       re-write batch handling completely such that it streamed individual batch
    *       items instead of loading the entire batch payload into memory and then
    *       processing the batch items.
@@ -84,7 +84,7 @@ public class EntityRequestResource extends BaseResource {
    * @param id
    * @param payload
    * @return
-   * @throws Exception 
+   * @throws Exception
    */
   protected Response updateEntity(HttpHeaders httpHeaders, UriInfo uriInfo, ContextResolver<ODataProducer> producerResolver,
       String entitySetName,
@@ -98,7 +98,7 @@ public class EntityRequestResource extends BaseResource {
     // is this a new media resource?
     // check for HasStream
     EdmEntitySet entitySet = producer.getMetadata().findEdmEntitySet(entitySetName);
-    if (null == entitySet) {
+    if (entitySet == null) {
       throw new NotFoundException();
     }
 
@@ -122,7 +122,7 @@ public class EntityRequestResource extends BaseResource {
   /**
    * update the media resource found in the payload for the media link entry (mle)
    * identified by the given key.
-   * 
+   *
    * @param httpHeaders
    * @param uriInfo
    * @param producer
@@ -130,7 +130,7 @@ public class EntityRequestResource extends BaseResource {
    * @param payload
    * @param key
    * @return HTTP 204 No Content response if successful.
-   * @throws IOException 
+   * @throws IOException
    */
   protected Response updateMediaLinkEntry(HttpHeaders httpHeaders,
       UriInfo uriInfo, ODataProducer producer, EdmEntitySet entitySet, InputStream payload, OEntityKey key) throws IOException {
@@ -209,7 +209,7 @@ public class EntityRequestResource extends BaseResource {
     // is this a new media resource?
     // check for HasStream
     EdmEntitySet entitySet = producer.getMetadata().findEdmEntitySet(entitySetName);
-    if (null == entitySet) {
+    if (entitySet == null) {
       throw new NotFoundException();
     }
 

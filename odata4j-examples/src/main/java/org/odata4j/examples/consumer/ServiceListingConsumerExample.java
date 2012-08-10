@@ -1,10 +1,8 @@
 package org.odata4j.examples.consumer;
 
 import org.core4j.Enumerable;
-import org.odata4j.consumer.ODataClientException;
 import org.odata4j.consumer.ODataConsumer;
 import org.odata4j.consumer.ODataConsumers;
-import org.odata4j.consumer.ODataServerException;
 import org.odata4j.core.EntitySetInfo;
 import org.odata4j.examples.AbstractExample;
 
@@ -29,12 +27,9 @@ public class ServiceListingConsumerExample extends AbstractExample {
         ODataEndpoints.NERD_DINNER,
         ODataEndpoints.TECH_ED,
         ODataEndpoints.EU_TECH_ED,
-        ODataEndpoints.PLURALSIGHT,
         ODataEndpoints.TELERIK_TV,
         ODataEndpoints.PROAGORA_FR,
-        ODataEndpoints.PROAGORA_EN,
-        ODataEndpoints.INETA_LIVE,
-        ODataEndpoints.NUGET
+        ODataEndpoints.PROAGORA_EN
         );
 
     //Enumerable<String> brokenServices = Enumerable.create(
@@ -45,6 +40,8 @@ public class ServiceListingConsumerExample extends AbstractExample {
     //    ODataEndpoints.PDC_2010, // four of the entity types return 404
     //    ODataEndpoints.MIX10 // down
     //    ODataEndpoints.AGILITRAIN,  // bad cert, redirect - down?
+    //    ODataEndpoints.PLURALSIGHT, // bad datetime, see http://code.google.com/p/odata4j/issues/detail?id=198
+    //    ODataEndpoints.INETA_LIVE,  // internal server error
     //    );
 
     Enumerable<String> largeServices = Enumerable.create(
@@ -54,7 +51,8 @@ public class ServiceListingConsumerExample extends AbstractExample {
         // ODataEndpoints.SUPER_USER,
         // ODataEndpoints.SERVER_FAULT,
         // ODataEndpoints.META_STACK_OVERFLOW,
-        ODataEndpoints.WORLD_CUP
+        ODataEndpoints.WORLD_CUP,
+        ODataEndpoints.NUGET
         );
 
     // stack overflow feeds 500 unless requests are rate-limited
@@ -72,28 +70,16 @@ public class ServiceListingConsumerExample extends AbstractExample {
   private void printOutFirstEntities(Iterable<String> services) {
     for (String endpoint : services) {
       ODataConsumer c = ODataConsumers.create(endpoint);
-      try {
-        for (EntitySetInfo entitySet : c.getEntitySets())
-          reportEntities(entitySet.getHref(), c.getEntities(entitySet.getHref()).top(1).execute());
-      } catch (ODataServerException e) {
-        reportError(e);
-      } catch (ODataClientException e) {
-        report("Client error: " + e.getMessage());
-      }
+      for (EntitySetInfo entitySet : c.getEntitySets())
+        reportEntities(entitySet.getHref(), c.getEntities(entitySet.getHref()).top(1).execute());
     }
   }
 
   private void printOutAllEntities(Iterable<String> services) {
     for (String endpoint : services) {
       ODataConsumer c = ODataConsumers.create(endpoint);
-      try {
-        for (EntitySetInfo entitySet : c.getEntitySets())
-          reportEntities(entitySet.getTitle(), c.getEntities(entitySet.getHref()).execute());
-      } catch (ODataServerException e) {
-        reportError(e);
-      } catch (ODataClientException e) {
-        report("Client error: " + e.getMessage());
-      }
+      for (EntitySetInfo entitySet : c.getEntitySets())
+        reportEntities(entitySet.getTitle(), c.getEntities(entitySet.getHref()).execute());
     }
   }
 

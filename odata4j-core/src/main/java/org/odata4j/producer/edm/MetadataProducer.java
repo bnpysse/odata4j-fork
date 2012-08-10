@@ -41,6 +41,8 @@ import org.odata4j.edm.EdmProperty.CollectionKind;
 import org.odata4j.edm.EdmSchema;
 import org.odata4j.edm.EdmStructuralType;
 import org.odata4j.edm.EdmType;
+import org.odata4j.exceptions.NotFoundException;
+import org.odata4j.exceptions.NotImplementedException;
 import org.odata4j.format.xml.EdmxFormatWriter;
 import org.odata4j.producer.BaseResponse;
 import org.odata4j.producer.CountResponse;
@@ -55,8 +57,6 @@ import org.odata4j.producer.PropertyPath;
 import org.odata4j.producer.PropertyPathHelper;
 import org.odata4j.producer.QueryInfo;
 import org.odata4j.producer.Responses;
-import org.odata4j.producer.exceptions.NotFoundException;
-import org.odata4j.producer.exceptions.NotImplementedException;
 
 /**
  * A producer for $metadata.
@@ -770,10 +770,9 @@ public class MetadataProducer implements ODataProducer {
     // didn't find it...
   }
 
-  public void log() {
+  public void dump() {
     StringWriter sw = new StringWriter();
     EdmxFormatWriter.write(edm, sw);
-    //log.debug(sw.toString());
     System.out.println(sw.toString());
   }
 
@@ -853,8 +852,7 @@ public class MetadataProducer implements ODataProducer {
   }
 
   @Override
-  public <TExtension extends OExtension<ODataProducer>> TExtension findExtension(Class<TExtension> clazz,
-      Map<String, Object> params) {
+  public <TExtension extends OExtension<ODataProducer>> TExtension findExtension(Class<TExtension> clazz) {
     return null;
   }
 }

@@ -11,8 +11,10 @@ import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.Namespace;
 import javax.xml.stream.events.StartElement;
@@ -21,6 +23,7 @@ import javax.xml.stream.events.XMLEvent;
 import org.core4j.Enumerable;
 import org.odata4j.core.Throwables;
 import org.odata4j.stax2.Attribute2;
+import org.odata4j.stax2.Characters2;
 import org.odata4j.stax2.EndElement2;
 import org.odata4j.stax2.Namespace2;
 import org.odata4j.stax2.QName2;
@@ -166,6 +169,27 @@ public class StaxXMLFactoryProvider2 extends XMLFactoryProvider2 {
       this.real = real;
     }
 
+    @Override
+    public String toString() {
+      return String.format("%s[%s]", StaxXMLEvent2.class.getSimpleName(), getEventTypeName());
+    }
+
+    private String getEventTypeName() {
+      switch (real.getEventType()) {
+        case XMLStreamConstants.START_ELEMENT: return "START_ELEMENT";
+        case XMLStreamConstants.END_ELEMENT: return "END_ELEMENT";
+        case XMLStreamConstants.CHARACTERS: return "CHARACTERS";
+        case XMLStreamConstants.ATTRIBUTE: return "ATTRIBUTE";
+        case XMLStreamConstants.NAMESPACE: return "NAMESPACE";
+        case XMLStreamConstants.PROCESSING_INSTRUCTION: return "PROCESSING_INSTRUCTION";
+        case XMLStreamConstants.COMMENT: return "COMMENT";
+        case XMLStreamConstants.START_DOCUMENT: return "START_DOCUMENT";
+        case XMLStreamConstants.END_DOCUMENT: return "END_DOCUMENT";
+        case XMLStreamConstants.DTD: return "DTD";
+        default: return "UNKNOWN TYPE " + real.getEventType();
+      }
+    }
+
     public XMLEvent getXMLEvent() {
       return real;
     }
@@ -181,6 +205,11 @@ public class StaxXMLFactoryProvider2 extends XMLFactoryProvider2 {
     }
 
     @Override
+    public Characters2 asCharacters() {
+      return new StaxCharacters2(real.asCharacters());
+    }
+
+    @Override
     public boolean isEndElement() {
       return real.isEndElement();
     }
@@ -189,6 +218,12 @@ public class StaxXMLFactoryProvider2 extends XMLFactoryProvider2 {
     public boolean isStartElement() {
       return real.isStartElement();
     }
+
+    @Override
+    public boolean isCharacters() {
+      return real.isCharacters();
+    }
+
   }
 
   private static class StaxEndElement2 implements EndElement2 {
@@ -290,6 +325,20 @@ public class StaxXMLFactoryProvider2 extends XMLFactoryProvider2 {
       return new QName2(real.getName().getNamespaceURI(),
           real.getName().getLocalPart(), real.getName().getPrefix());
     }
+  }
+
+  private static class StaxCharacters2 implements Characters2 {
+    protected final Characters real;
+
+    public StaxCharacters2(Characters real) {
+      this.real = real;
+    }
+
+    @Override
+    public String getData() {
+      return real.getData();
+    }
+
   }
 
 }

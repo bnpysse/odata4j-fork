@@ -24,6 +24,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
+import org.odata4j.core.ODataConstants.Charsets;
 import org.odata4j.core.OEntities;
 import org.odata4j.core.OEntity;
 import org.odata4j.core.OEntityId;
@@ -45,19 +46,17 @@ import org.odata4j.examples.AbstractExample;
 import org.odata4j.examples.ODataServerFactory;
 import org.odata4j.examples.producer.jpa.DatabaseUtils;
 import org.odata4j.examples.producer.jpa.northwind.Customers;
+import org.odata4j.exceptions.NotImplementedException;
 import org.odata4j.producer.BaseResponse;
 import org.odata4j.producer.CountResponse;
 import org.odata4j.producer.EntitiesResponse;
 import org.odata4j.producer.EntityIdResponse;
 import org.odata4j.producer.EntityQueryInfo;
 import org.odata4j.producer.EntityResponse;
-import org.odata4j.producer.ErrorResponseExtension;
-import org.odata4j.producer.ErrorResponseExtensions;
 import org.odata4j.producer.ODataProducer;
 import org.odata4j.producer.QueryInfo;
 import org.odata4j.producer.Responses;
 import org.odata4j.producer.edm.MetadataProducer;
-import org.odata4j.producer.exceptions.NotImplementedException;
 import org.odata4j.producer.resources.DefaultODataProducerProvider;
 
 /**
@@ -74,7 +73,7 @@ public class XmlDataProducerExample extends AbstractExample {
 
   private void run(String[] args) {
 
-    System.out.println("Please direct your browerser to " + endpointUri + "Customers");
+    System.out.println("Please direct your browser to " + endpointUri + "Customers");
 
     // register the producer as the static instance, then launch the http server
     DefaultODataProducerProvider.setInstance(new XmlDataProducer());
@@ -105,10 +104,10 @@ public class XmlDataProducerExample extends AbstractExample {
 
       // marshal them to the test data file
       Marshaller marshaller = JAXBContext.newInstance(CustomersList.class).createMarshaller();
-      marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+      marshaller.setProperty(Marshaller.JAXB_ENCODING, Charsets.Upper.UTF_8);
       marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
-      Writer out = new OutputStreamWriter(new FileOutputStream("/META-INF/xmlDataProducerExampleTestData.xml"), "utf-8");
+      Writer out = new OutputStreamWriter(new FileOutputStream("/META-INF/xmlDataProducerExampleTestData.xml"), Charsets.Upper.UTF_8);
       try {
         List<?> res = q.getResultList();
         CustomersList c = new CustomersList();
@@ -308,10 +307,7 @@ public class XmlDataProducerExample extends AbstractExample {
     }
 
     @Override
-    public <TExtension extends OExtension<ODataProducer>> TExtension findExtension(Class<TExtension> clazz,
-        Map<String, Object> params) {
-      if (clazz.equals(ErrorResponseExtension.class))
-        return clazz.cast(ErrorResponseExtensions.ALWAYS_RETURN_INNER_ERRORS);
+    public <TExtension extends OExtension<ODataProducer>> TExtension findExtension(Class<TExtension> clazz) {
       return null;
     }
 

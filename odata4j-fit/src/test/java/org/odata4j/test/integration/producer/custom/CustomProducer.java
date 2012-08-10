@@ -37,6 +37,9 @@ import org.odata4j.edm.EdmEntitySet;
 import org.odata4j.edm.EdmFunctionImport;
 import org.odata4j.edm.EdmProperty.CollectionKind;
 import org.odata4j.edm.EdmSimpleType;
+import org.odata4j.exceptions.BadRequestException;
+import org.odata4j.exceptions.NotFoundException;
+import org.odata4j.exceptions.NotImplementedException;
 import org.odata4j.producer.BaseResponse;
 import org.odata4j.producer.CountResponse;
 import org.odata4j.producer.EntitiesResponse;
@@ -49,9 +52,6 @@ import org.odata4j.producer.PropertyPathHelper;
 import org.odata4j.producer.QueryInfo;
 import org.odata4j.producer.Responses;
 import org.odata4j.producer.edm.MetadataProducer;
-import org.odata4j.producer.exceptions.BadRequestException;
-import org.odata4j.producer.exceptions.NotFoundException;
-import org.odata4j.producer.exceptions.NotImplementedException;
 
 /**
  * A custom producer for various test scenarios that aren't possible with
@@ -348,8 +348,7 @@ public class CustomProducer implements ODataProducer {
   }
 
   @Override
-  public <TExtension extends OExtension<ODataProducer>> TExtension findExtension(Class<TExtension> clazz,
-      Map<String, Object> params) {
+  public <TExtension extends OExtension<ODataProducer>> TExtension findExtension(Class<TExtension> clazz) {
     if (clazz.equals(OMediaLinkExtension.class))
       return clazz.cast(new MediaLinkExtension());
     return null;
@@ -374,7 +373,7 @@ public class CustomProducer implements ODataProducer {
     public InputStream getInputStreamForMediaLinkEntry(OEntity mle, String etag, EntityQueryInfo query) {
       String id = mle.getEntityKey().asSingleValue().toString();
       String content = mediaResources.get(id); //  "here we have some content for the mle with id: " +;
-      if (null == content) {
+      if (content == null) {
         throw new NotFoundException();
       }
       return new ByteArrayInputStream(content.getBytes());
@@ -445,7 +444,7 @@ public class CustomProducer implements ODataProducer {
     @Override
     public OEntity createMediaLinkEntry(EdmEntitySet entitySet, HttpHeaders httpHeaders) {
       List<String> slugs = httpHeaders.getRequestHeader("Slug");
-      if (null == slugs || slugs.isEmpty()) {
+      if (slugs == null || slugs.isEmpty()) {
         throw new BadRequestException("missing Slug header");
       }
 

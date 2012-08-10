@@ -1,8 +1,6 @@
 package org.odata4j.producer.resources;
 
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.PathParam;
@@ -12,15 +10,14 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.ContextResolver;
 
-import org.odata4j.core.ODataConstants;
 import org.odata4j.core.OEntityKey;
 import org.odata4j.edm.EdmEntitySet;
+import org.odata4j.exceptions.NotFoundException;
+import org.odata4j.exceptions.NotImplementedException;
 import org.odata4j.producer.EntityQueryInfo;
 import org.odata4j.producer.EntityResponse;
 import org.odata4j.producer.ODataProducer;
 import org.odata4j.producer.OMediaLinkExtension;
-import org.odata4j.producer.exceptions.NotFoundException;
-import org.odata4j.producer.exceptions.NotImplementedException;
 
 public class ValueRequestResource {
 
@@ -46,13 +43,7 @@ public class ValueRequestResource {
   }
 
   protected Response getStreamResponse(ODataProducer producer, EdmEntitySet entitySet, String entityId, EntityQueryInfo queryInfo) {
-    OMediaLinkExtension mediaLinkExtension = null;
-    try {
-      Map<String, Object> params = new HashMap<String, Object>();
-      params.put(ODataConstants.Params.EdmEntitySet, entitySet);
-      params.put(ODataConstants.Params.ODataProducer, producer);
-      mediaLinkExtension = producer.findExtension(OMediaLinkExtension.class, params);
-    } catch (UnsupportedOperationException e) {}
+    OMediaLinkExtension mediaLinkExtension = producer.findExtension(OMediaLinkExtension.class);
 
     if (mediaLinkExtension == null)
       throw new NotImplementedException();

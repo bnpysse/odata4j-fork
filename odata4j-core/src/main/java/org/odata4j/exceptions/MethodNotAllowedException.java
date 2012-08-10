@@ -1,9 +1,11 @@
-package org.odata4j.producer.exceptions;
+package org.odata4j.exceptions;
 
 import javax.ws.rs.core.Response.Status.Family;
 import javax.ws.rs.core.Response.StatusType;
 
-public class MethodNotAllowedException extends ODataException {
+import org.odata4j.core.OError;
+
+public class MethodNotAllowedException extends ODataProducerException {
 
   private static final long serialVersionUID = 1L;
 
@@ -23,14 +25,16 @@ public class MethodNotAllowedException extends ODataException {
     }
   };
 
-  public MethodNotAllowedException() {}
+  public MethodNotAllowedException() {
+    this(null, null);
+  }
 
   public MethodNotAllowedException(String message) {
-    super(message);
+    this(message, null);
   }
 
   public MethodNotAllowedException(Throwable cause) {
-    super(cause);
+    this(null, cause);
   }
 
   public MethodNotAllowedException(String message, Throwable cause) {
@@ -38,7 +42,24 @@ public class MethodNotAllowedException extends ODataException {
   }
 
   @Override
-  public StatusType getStatus() {
+  public StatusType getHttpStatus() {
     return METHOD_NOT_ALLOWED;
+  }
+
+  private MethodNotAllowedException(OError error) {
+    super(error);
+  }
+
+  public static class Factory implements ExceptionFactory<MethodNotAllowedException> {
+
+    @Override
+    public int getStatusCode() {
+      return METHOD_NOT_ALLOWED.getStatusCode();
+    }
+
+    @Override
+    public MethodNotAllowedException createException(OError error) {
+      return new MethodNotAllowedException(error);
+    }
   }
 }

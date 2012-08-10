@@ -7,8 +7,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.ws.rs.core.Response.Status;
-
 import org.core4j.Enumerable;
 import org.core4j.Func;
 import org.core4j.ReadOnlyIterator;
@@ -17,7 +15,6 @@ import org.odata4j.core.Guid;
 import org.odata4j.core.OCollection;
 import org.odata4j.core.ODataConstants;
 import org.odata4j.core.ODataVersion;
-import org.odata4j.core.OErrors;
 import org.odata4j.core.OFunctionParameter;
 import org.odata4j.core.OFunctionParameters;
 import org.odata4j.core.OFunctionRequest;
@@ -30,6 +27,7 @@ import org.odata4j.edm.EdmDataServices;
 import org.odata4j.edm.EdmFunctionImport;
 import org.odata4j.edm.EdmSimpleType;
 import org.odata4j.edm.EdmType;
+import org.odata4j.exceptions.ODataProducerException;
 import org.odata4j.expression.Expression;
 import org.odata4j.expression.LiteralExpression;
 import org.odata4j.format.FormatParser;
@@ -45,17 +43,17 @@ public class ConsumerFunctionCallRequest<T extends OObject>
   private final EdmFunctionImport function;
 
   public ConsumerFunctionCallRequest(ODataClient client, String serviceRootUri,
-      EdmDataServices metadata, String lastSegment) throws ODataServerException {
+      EdmDataServices metadata, String lastSegment) {
     super(client, serviceRootUri, metadata, lastSegment);
     // lastSegment is the function call name.
     function = metadata.findEdmFunctionImport(lastSegment);
     if (function == null)
-      throw new ODataServerException(Status.NOT_FOUND, OErrors.error(null, "Function Import " + lastSegment + " not defined", null));
+      throw new IllegalArgumentException("Function Import " + lastSegment + " not defined");
   }
 
   @SuppressWarnings("unchecked")
   @Override
-  public Enumerable<T> execute() throws ODataServerException, ODataClientException {
+  public Enumerable<T> execute() throws ODataProducerException {
     // turn each param into a custom query option
     for (OFunctionParameter p : params)
       custom(p.getName(), toUriString(p));
@@ -182,7 +180,7 @@ public class ConsumerFunctionCallRequest<T extends OObject>
     return parameter(name, OSimpleObjects.create(EdmSimpleType.STRING, value));
   }
 
-  private OObject doRequest(ODataClientRequest request) throws ODataServerException, ODataClientException {
+  private OObject doRequest(ODataClientRequest request) throws ODataProducerException {
     Response response = getClient().callFunction(request);
 
     ODataVersion version = InternalUtil.getDataServiceVersion(response.getHeaders().getFirst(ODataConstants.Headers.DATA_SERVICE_VERSION));
@@ -234,37 +232,7 @@ public class ConsumerFunctionCallRequest<T extends OObject>
         return IterationResult.done();
       }
 
-      /* TODO support paging, this code was from ConsumerQueryEntitiesRequest...we'll need something like this.
-      // old-style paging: $page and $itemsPerPage
-      if (request.getQueryParams().containsKey("$page") && request.getQueryParams().containsKey("$itemsPerPage")) {
-          if (feedEntryCount == 0) {
-              return IterationResult.done();
-          }
-
-          int page = Integer.parseInt(request.getQueryParams().get("$page"));
-          // int itemsPerPage = Integer.parseInt(request.getQueryParams().get("$itemsPerPage"));
-
-          request = request.queryParam("$page", Integer.toString(page + 1));
-      } // new-style paging: $skiptoken
-      else {
-          if (feed.getNext() == null) {
-              return IterationResult.done();
-          }
-
-          int skipTokenIndex = feed.getNext().indexOf("$skiptoken=");
-          if (skipTokenIndex > -1) {
-              String skiptoken = feed.getNext().substring(skipTokenIndex + "$skiptoken=".length());
-              // decode the skiptoken first since it gets encoded as a query param
-              skiptoken = URLDecoder.decode(skiptoken, "UTF-8");
-              request = request.queryParam("$skiptoken", skiptoken);
-          } else if (feed.getNext().toLowerCase().startsWith("http")) {
-              request = ODataClientRequest.get(feed.getNext());
-          } else {
-              throw new UnsupportedOperationException();
-          }
-
-      } */
-
+      /* TODO support paging */
     }
   }
 

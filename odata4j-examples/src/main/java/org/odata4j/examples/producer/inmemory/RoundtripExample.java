@@ -4,19 +4,12 @@ import static org.odata4j.examples.JaxRsImplementation.JERSEY;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.core4j.Func;
-import org.odata4j.consumer.ODataClientException;
 import org.odata4j.consumer.ODataConsumer;
 import org.odata4j.consumer.ODataConsumers;
-import org.odata4j.consumer.ODataServerException;
-import org.odata4j.core.OExtension;
 import org.odata4j.examples.AbstractExample;
 import org.odata4j.examples.ODataServerFactory;
-import org.odata4j.producer.ErrorResponseExtension;
-import org.odata4j.producer.ErrorResponseExtensions;
-import org.odata4j.producer.ODataProducer;
 import org.odata4j.producer.inmemory.InMemoryProducer;
 import org.odata4j.producer.resources.DefaultODataProducerProvider;
 import org.odata4j.producer.server.ODataServer;
@@ -68,14 +61,7 @@ public class RoundtripExample extends AbstractExample {
     // create/start the server
     String endpointUri = "http://localhost:8885/RoundtripExample.svc/";
 
-    InMemoryProducer producer = new InMemoryProducer("RoundtripExample") {
-      @Override
-      public <TExtension extends OExtension<ODataProducer>> TExtension findExtension(Class<TExtension> clazz, Map<String, Object> params) {
-        if (clazz.equals(ErrorResponseExtension.class))
-          return clazz.cast(ErrorResponseExtensions.ALWAYS_RETURN_INNER_ERRORS);
-        return null;
-      }
-    };
+    InMemoryProducer producer = new InMemoryProducer("RoundtripExample");
 
     producer.register(Customer.class, "Customers", new Func<Iterable<Customer>>() {
       public Iterable<Customer> apply() {
@@ -88,23 +74,17 @@ public class RoundtripExample extends AbstractExample {
     DefaultODataProducerProvider.setInstance(producer);
     ODataServer server = new ODataServerFactory(JERSEY).startODataServer(endpointUri);
 
-    try {
-      // create the client
-      ODataConsumer.dump.responseHeaders(true);
-      ODataConsumer consumer = ODataConsumers.create(endpointUri);
+    // create the client
+    ODataConsumer.dump.responseHeaders(true);
+    ODataConsumer consumer = ODataConsumers.create(endpointUri);
 
-      reportEntities("Customers", consumer.getEntities("Customers").execute());
+    reportEntities("Customers", consumer.getEntities("Customers").execute());
 
-      for (Customer customer : consumer.getEntities(Customer.class, "Customers").execute())
-        report(customer.toString());
-    } catch (ODataServerException e) {
-      reportError(e);
-    } catch (ODataClientException e) {
-      report("Client error: " + e.getMessage());
-    } finally {
-      // stop the server
-      server.stop();
-    }
+    for (Customer customer : consumer.getEntities(Customer.class, "Customers").execute())
+      report(customer.toString());
+
+    // stop the server
+    server.stop();
   }
 
 }

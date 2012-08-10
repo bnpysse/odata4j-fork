@@ -1,9 +1,11 @@
-package org.odata4j.producer.exceptions;
+package org.odata4j.exceptions;
 
 import javax.ws.rs.core.Response.Status.Family;
 import javax.ws.rs.core.Response.StatusType;
 
-public class NotImplementedException extends ODataException {
+import org.odata4j.core.OError;
+
+public class NotImplementedException extends ODataProducerException {
 
   private static final long serialVersionUID = 1L;
 
@@ -23,14 +25,16 @@ public class NotImplementedException extends ODataException {
     }
   };
 
-  public NotImplementedException() {}
+  public NotImplementedException() {
+    this(null, null);
+  }
 
   public NotImplementedException(String message) {
-    super(message);
+    this(message, null);
   }
 
   public NotImplementedException(Throwable cause) {
-    super(cause);
+    this(null, cause);
   }
 
   public NotImplementedException(String message, Throwable cause) {
@@ -38,8 +42,24 @@ public class NotImplementedException extends ODataException {
   }
 
   @Override
-  public StatusType getStatus() {
+  public StatusType getHttpStatus() {
     return NOT_IMPLEMENTED;
   }
 
+  private NotImplementedException(OError error) {
+    super(error);
+  }
+
+  public static class Factory implements ExceptionFactory<NotImplementedException> {
+
+    @Override
+    public int getStatusCode() {
+      return NOT_IMPLEMENTED.getStatusCode();
+    }
+
+    @Override
+    public NotImplementedException createException(OError error) {
+      return new NotImplementedException(error);
+    }
+  }
 }

@@ -8,8 +8,10 @@ import org.core4j.Func;
 import org.core4j.Func1;
 import org.core4j.ReadOnlyIterator;
 import org.odata4j.core.ODataConstants;
+import org.odata4j.core.ODataConstants.Charsets;
 import org.odata4j.core.ODataVersion;
 import org.odata4j.edm.EdmDataServices;
+import org.odata4j.exceptions.ODataProducerException;
 import org.odata4j.format.Entry;
 import org.odata4j.format.Feed;
 import org.odata4j.format.FormatParser;
@@ -30,7 +32,7 @@ public class ConsumerQueryEntitiesRequest<T> extends ConsumerQueryRequestBase<T>
   }
 
   @Override
-  public Enumerable<T> execute() throws ODataServerException, ODataClientException {
+  public Enumerable<T> execute() throws ODataProducerException {
     ODataClientRequest request = buildRequest(null);
     Enumerable<Entry> entries = getEntries(request);
 
@@ -41,7 +43,7 @@ public class ConsumerQueryEntitiesRequest<T> extends ConsumerQueryRequestBase<T>
     }).cast(entityType);
   }
 
-  private Enumerable<Entry> getEntries(final ODataClientRequest request) throws ODataServerException, ODataClientException {
+  private Enumerable<Entry> getEntries(final ODataClientRequest request) throws ODataProducerException {
     final Feed feed = doRequest(request);
     return Enumerable.createFromIterator(new Func<Iterator<Entry>>() {
       public Iterator<Entry> apply() {
@@ -50,7 +52,7 @@ public class ConsumerQueryEntitiesRequest<T> extends ConsumerQueryRequestBase<T>
     });
   }
 
-  private Feed doRequest(ODataClientRequest request) throws ODataServerException, ODataClientException {
+  private Feed doRequest(ODataClientRequest request) throws ODataProducerException {
     Response response = getClient().getEntities(request);
 
     ODataVersion version = InternalUtil.getDataServiceVersion(response.getHeaders()
@@ -112,7 +114,7 @@ public class ConsumerQueryEntitiesRequest<T> extends ConsumerQueryRequestBase<T>
         if (skipTokenIndex > -1) {
           String skiptoken = feed.getNext().substring(skipTokenIndex + "$skiptoken=".length());
           // decode the skiptoken first since it gets encoded as a query param
-          skiptoken = URLDecoder.decode(skiptoken, "UTF-8");
+          skiptoken = URLDecoder.decode(skiptoken, Charsets.Upper.UTF_8);
           request = request.queryParam("$skiptoken", skiptoken);
         } else if (feed.getNext().toLowerCase().startsWith("http")) {
           request = ODataClientRequest.get(feed.getNext());
