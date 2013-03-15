@@ -4,26 +4,32 @@
 /.git
 /target
 
+/odata4j-core/target
 /odata4j-core/.classpath
 /odata4j-core/.project
 /odata4j-core/.settings
 
+/odata4j-cxf/target
 /odata4j-cxf/.classpath
 /odata4j-cxf/.project
 /odata4j-cxf/.settings
 
+/odata4j-dist/target
 /odata4j-dist/.classpath
 /odata4j-dist/.project
 /odata4j-dist/.settings
 
+/odata4j-fit/target
 /odata4j-fit/.classpath
 /odata4j-fit/.project
 /odata4j-fit/.settings
 
+/odata4j-examples/target
 /odata4j-examples/.classpath
 /odata4j-examples/.project
 /odata4j-examples/.settings
 
+/odata4j-jersey/target
 /odata4j-jersey/.classpath
 /odata4j-jersey/.project
 /odata4j-jersey/.settings
