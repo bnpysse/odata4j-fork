@@ -3,6 +3,7 @@ package org.odata4j.producer.resources;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.logging.Logger;
 
@@ -165,7 +166,20 @@ public class EntityRequestResource extends BaseResource {
 
     String method = httpHeaders.getRequestHeaders().getFirst(ODataConstants.Headers.X_HTTP_METHOD);
     if ("MERGE".equals(method)) {
-      OEntity entity = this.getRequestEntity(httpHeaders, uriInfo, payload, producer.getMetadata(), entitySetName, entityKey);
+      OEntity entity = null;
+      Class<? extends Serializable> clazz = producer.getMetadata().findJavaClass(entitySetName);
+      
+      if(clazz != null) {
+		EdmEntitySet entitySet = producer.getMetadata().findEdmEntitySet(entitySetName);
+		if (entitySet == null) {
+			throw new NotFoundException();
+		}
+		InputStream payloadStream = new ByteArrayInputStream(payload.getBytes());
+      	entity = this.getRequestEntity(payloadStream, clazz, entitySet, entityKey);
+      } else {
+    	entity = this.getRequestEntity(httpHeaders, uriInfo, payload, producer.getMetadata(), entitySetName, entityKey);  
+      }
+      
       producer.mergeEntity(context, entitySetName, entity);
 
       // TODO: hmmh..isn't this supposed to be HTTP 204 No Content?

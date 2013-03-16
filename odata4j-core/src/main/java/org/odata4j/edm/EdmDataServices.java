@@ -1,7 +1,11 @@
 package org.odata4j.edm;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.core4j.Enumerable;
 import org.core4j.Predicate1;
@@ -23,19 +27,21 @@ import org.odata4j.internal.AndroidCompat;
  */
 public class EdmDataServices {
 
-  public static final EdmDataServices EMPTY = new EdmDataServices(null, ImmutableList.<EdmSchema> create(), ImmutableList.<PrefixedNamespace> create());
+  public static final EdmDataServices EMPTY = new EdmDataServices(null, ImmutableList.<EdmSchema> create(), ImmutableList.<PrefixedNamespace> create(), Collections.<String, Class<? extends Serializable>> emptyMap());
 
   private final ODataVersion version;
   private final ImmutableList<EdmSchema> schemas;
   private final ImmutableList<PrefixedNamespace> namespaces;
-
-  protected EdmDataServices(ODataVersion version, ImmutableList<EdmSchema> schemas, ImmutableList<PrefixedNamespace> namespaces) {
+  private final Map<String, Class<? extends Serializable>> javaClasses;
+  
+  protected EdmDataServices(ODataVersion version, ImmutableList<EdmSchema> schemas, ImmutableList<PrefixedNamespace> namespaces, Map<String, Class<? extends Serializable>> javaClasses) {
+	this.javaClasses = javaClasses;
     this.version = version;
     this.schemas = schemas;
     this.namespaces = namespaces;
   }
 
-  public String getVersion() {
+public String getVersion() {
     return version != null ? version.asString : null;
   }
 
@@ -244,6 +250,11 @@ public class EdmDataServices {
     }
     return t;
   }
+	
+	public Class<? extends Serializable> findJavaClass(String entitySetName) {
+		Class<? extends Serializable> clazz = javaClasses.get(entitySetName);
+		return clazz;
+	}
 
   /** Mutable builder for {@link EdmDataServices} objects. */
   public static class Builder {
@@ -251,12 +262,13 @@ public class EdmDataServices {
     private ODataVersion version = ODataConstants.DATA_SERVICE_VERSION;
     private final List<EdmSchema.Builder> schemas = new ArrayList<EdmSchema.Builder>();
     private final List<PrefixedNamespace> namespaces = new ArrayList<PrefixedNamespace>();
-
+    private final Map<String, Class<? extends Serializable>> javaClasses = new HashMap<String, Class<? extends Serializable>>();
+    
     public EdmDataServices build() {
       List<EdmSchema> schemas = new ArrayList<EdmSchema>(this.schemas.size());
       for (EdmSchema.Builder schema : this.schemas)
         schemas.add(schema.build());
-      return new EdmDataServices(version, ImmutableList.copyOf(schemas), ImmutableList.copyOf(namespaces));
+      return new EdmDataServices(version, ImmutableList.copyOf(schemas), ImmutableList.copyOf(namespaces), Collections.unmodifiableMap(javaClasses));
     }
 
     public Builder setVersion(ODataVersion version) {
@@ -285,6 +297,11 @@ public class EdmDataServices {
       return schemas;
     }
 
+    public Builder addJavaClass(String name, Class<? extends Serializable> clazz) {
+    	this.javaClasses.put(name, clazz);
+    	return this;
+    }
+    
     public EdmComplexType.Builder findEdmComplexType(String complexTypeFQName) {
       // TODO share or remove
       for (EdmSchema.Builder schema : this.schemas) {
@@ -362,5 +379,4 @@ public class EdmDataServices {
     }
 
   }
-
 }

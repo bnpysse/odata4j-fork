@@ -24,6 +24,8 @@ public class ODataConstants {
   public static final ODataVersion DATA_SERVICE_VERSION = ODataVersion.V1;
   public static final String DATA_SERVICE_VERSION_HEADER = DATA_SERVICE_VERSION.asString;
 
+  public static final String GSON_PARSED = "GSON_PARSED";
+  
   /** Common http header names. */
   public static class Headers {
     public static final String X_HTTP_METHOD = "X-HTTP-METHOD";

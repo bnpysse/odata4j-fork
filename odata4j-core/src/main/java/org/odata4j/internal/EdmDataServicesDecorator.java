@@ -18,7 +18,7 @@ public abstract class EdmDataServicesDecorator extends EdmDataServices {
   protected abstract EdmDataServices getDelegate();
 
   public EdmDataServicesDecorator() {
-    super(null, null, null);
+    super(null, null, null, null);
   }
 
   @Override
