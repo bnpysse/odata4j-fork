@@ -62,7 +62,7 @@ public abstract class BaseResource {
 		Reader reader = new InputStreamReader(payload);
 		Serializable parsedObject = gson.fromJson(reader, clazz);
 		byte[] data = SerializationUtils.serialize(parsedObject);
-		OProperty<?> property = OProperties.binary(GSON_PARSED, data);
+		OProperty<?> property = OProperties.binary(ODataConstants.GSON_PARSED, data);
 		List<OProperty<?>> properties = new ArrayList<OProperty<?>>(1);
 		properties.add(property);
 		return OEntities.create(entitySet, entityKey, properties, null);
