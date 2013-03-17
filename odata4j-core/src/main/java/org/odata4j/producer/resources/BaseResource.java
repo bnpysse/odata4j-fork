@@ -5,25 +5,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Serializable;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.commons.lang.SerializationUtils;
 import org.odata4j.core.ODataConstants;
 import org.odata4j.core.ODataVersion;
-import org.odata4j.core.OEntities;
 import org.odata4j.core.OEntity;
 import org.odata4j.core.OEntityKey;
-import org.odata4j.core.OProperties;
-import org.odata4j.core.OProperty;
 import org.odata4j.edm.EdmDataServices;
 import org.odata4j.edm.EdmEntitySet;
 import org.odata4j.exceptions.NotAcceptableException;
@@ -37,8 +29,6 @@ import org.odata4j.producer.ODataContext;
 import org.odata4j.producer.ODataProducer;
 import org.odata4j.producer.OMediaLinkExtension;
 import org.odata4j.producer.OMediaLinkExtensions;
-
-import com.google.gson.Gson;
 
 public abstract class BaseResource {
 
@@ -57,17 +47,6 @@ public abstract class BaseResource {
     return entry.getEntity();
   }
 
-	protected OEntity getRequestEntity(InputStream payload, Class<? extends Serializable> clazz, EdmEntitySet entitySet, OEntityKey entityKey) {
-		Gson gson = new Gson();
-		Reader reader = new InputStreamReader(payload);
-		Serializable parsedObject = gson.fromJson(reader, clazz);
-		byte[] data = SerializationUtils.serialize(parsedObject);
-		OProperty<?> property = OProperties.binary(ODataConstants.GSON_PARSED, data);
-		List<OProperty<?>> properties = new ArrayList<OProperty<?>>(1);
-		properties.add(property);
-		return OEntities.create(entitySet, entityKey, properties, null);
-	}
-  
   protected OEntity getRequestEntity(HttpHeaders httpHeaders, UriInfo uriInfo, InputStream payload, EdmDataServices metadata, String entitySetName, OEntityKey entityKey) throws UnsupportedEncodingException {
     // TODO validation of MaxDataServiceVersion against DataServiceVersion
     // see spec [ms-odata] section 1.7
