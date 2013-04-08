@@ -59,7 +59,7 @@ public class ConsumerGetEntityRequest<T> extends AbstractConsumerEntityRequest<T
       request = request.queryParam("$expand", expand);
     }
 
-    //  the first segment contains the entitySetName we start from
+    //  the first segment contains the entitySet we start from
     EdmEntitySet entitySet = getMetadata().getEdmEntitySet(getSegments().get(0).segment);
     for (EntitySegment segment : getSegments().subList(1, getSegments().size())) {
       EdmNavigationProperty navProperty = entitySet.getType().findNavigationProperty(segment.segment);

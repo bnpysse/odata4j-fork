@@ -9,6 +9,7 @@ import org.odata4j.core.OError;
 import org.odata4j.core.OObject;
 import org.odata4j.core.OSimpleObject;
 import org.odata4j.exceptions.UnsupportedMediaTypeException;
+import org.odata4j.format.json.GsonEntryParser;
 import org.odata4j.format.json.JsonCollectionFormatParser;
 import org.odata4j.format.json.JsonComplexObjectFormatParser;
 import org.odata4j.format.json.JsonEntityFormatParser;
@@ -75,13 +76,14 @@ public class FormatParserFactory {
   public static <T> FormatParser<T> getParser(Class<T> targetType, MediaType contentType, Settings settings) {
 
     FormatType type;
-    if (contentType.isCompatible(MediaType.APPLICATION_JSON_TYPE))
+    if (contentType.isCompatible(MediaType.APPLICATION_JSON_TYPE)) {
       type = FormatType.JSON;
-    else if (contentType.isCompatible(MediaType.APPLICATION_ATOM_XML_TYPE) && (Feed.class.isAssignableFrom(targetType) || Entry.class.isAssignableFrom(targetType))
-        || contentType.isCompatible(MediaType.APPLICATION_XML_TYPE))
+    } else if (contentType.isCompatible(MediaType.APPLICATION_ATOM_XML_TYPE) && (Feed.class.isAssignableFrom(targetType) || Entry.class.isAssignableFrom(targetType))
+        || contentType.isCompatible(MediaType.APPLICATION_XML_TYPE)) {
       type = FormatType.ATOM;
-    else
+    } else {
       throw new UnsupportedMediaTypeException("Unknown content type " + contentType);
+    }
 
     return getParser(targetType, type, settings);
   }
@@ -95,7 +97,7 @@ public class FormatParserFactory {
 
     @Override
     public FormatParser<Entry> getEntryFormatParser(Settings settings) {
-      return new JsonEntryFormatParser(settings);
+      return settings.isResponse ? new JsonEntryFormatParser(settings) : new GsonEntryParser(settings);
     }
 
     @Override

@@ -39,7 +39,7 @@ import org.odata4j.producer.ODataContextImpl;
 import org.odata4j.producer.ODataProducer;
 import org.odata4j.producer.OMediaLinkExtension;
 
-@Path("{entitySetName: [^/()]+?}{id: \\(.+?\\)}")
+@Path("{entitySet: [^/()]+?}{id: \\(.+?\\)}")
 public class EntityRequestResource extends BaseResource {
 
   private static final Logger log = Logger.getLogger(EntityRequestResource.class.getName());
@@ -48,7 +48,7 @@ public class EntityRequestResource extends BaseResource {
   public Response updateEntity(@Context HttpHeaders httpHeaders, @Context UriInfo uriInfo,
       @Context ContextResolver<ODataProducer> producerResolver,
       @Context SecurityContext securityContext,
-      @PathParam("entitySetName") String entitySetName,
+      @PathParam("entitySet") String entitySetName,
       @PathParam("id") String id,
       InputStream payload) throws Exception {
 
@@ -152,7 +152,7 @@ public class EntityRequestResource extends BaseResource {
   public Response mergeEntity(@Context HttpHeaders httpHeaders, @Context UriInfo uriInfo,
       @Context ContextResolver<ODataProducer> producerResolver,
       @Context SecurityContext securityContext,
-      @PathParam("entitySetName") String entitySetName,
+      @PathParam("entitySet") String entitySetName,
       @PathParam("id") String id,
       String payload) {
 
@@ -199,7 +199,7 @@ public class EntityRequestResource extends BaseResource {
       @Context SecurityContext securityContext,
       @QueryParam("$format") String format,
       @QueryParam("$callback") String callback,
-      @PathParam("entitySetName") String entitySetName,
+      @PathParam("entitySet") String entitySetName,
       @PathParam("id") String id) throws Exception {
 
     log.info(String.format("deleteEntity(%s,%s)", entitySetName, id));
@@ -256,7 +256,7 @@ public class EntityRequestResource extends BaseResource {
       @Context UriInfo uriInfo,
       @Context ContextResolver<ODataProducer> producerResolver,
       @Context SecurityContext securityContext,
-      @PathParam("entitySetName") String entitySetName,
+      @PathParam("entitySet") String entitySetName,
       @PathParam("id") String id,
       @QueryParam("$format") String format,
       @QueryParam("$callback") String callback,
@@ -308,7 +308,7 @@ public class EntityRequestResource extends BaseResource {
 
   @Path("{first: \\$}links/{targetNavProp:.+?}{targetId: (\\(.+?\\))?}")
   public LinksRequestResource getLinks(
-      @PathParam("entitySetName") String entitySetName,
+      @PathParam("entitySet") String entitySetName,
       @PathParam("id") String id,
       @PathParam("targetNavProp") String targetNavProp,
       @PathParam("targetId") String targetId) {

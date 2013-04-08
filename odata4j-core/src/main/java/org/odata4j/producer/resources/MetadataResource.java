@@ -66,7 +66,7 @@ public class MetadataResource {
   }
 
   @GET
-  @Path("{entitySetName}")
+  @Path("{entitySet}")
   @Produces({ ODataConstants.APPLICATION_ATOM_XML_CHARSET_UTF8,
       ODataConstants.TEXT_JAVASCRIPT_CHARSET_UTF8,
       ODataConstants.APPLICATION_JAVASCRIPT_CHARSET_UTF8 })
@@ -75,7 +75,7 @@ public class MetadataResource {
       @Context UriInfo uriInfo,
       @Context ContextResolver<ODataProducer> producerResolver,
       @Context SecurityContext securityContext,
-      @PathParam("entitySetName") String entitySetName,
+      @PathParam("entitySet") String entitySetName,
       @PathParam("optionalId") String optionalId,
       @QueryParam("$inlinecount") String inlineCount,
       @QueryParam("$top") String top,
@@ -100,7 +100,7 @@ public class MetadataResource {
   }
 
   @GET
-  @Path("{entitySetName}{id: (\\(.+?\\))}")
+  @Path("{entitySet}{id: (\\(.+?\\))}")
   @Produces({ ODataConstants.APPLICATION_ATOM_XML_CHARSET_UTF8,
       ODataConstants.TEXT_JAVASCRIPT_CHARSET_UTF8,
       ODataConstants.APPLICATION_JAVASCRIPT_CHARSET_UTF8 })
@@ -109,7 +109,7 @@ public class MetadataResource {
       @Context UriInfo uriInfo,
       @Context ContextResolver<ODataProducer> producerResolver,
       @Context SecurityContext securityContext,
-      @PathParam("entitySetName") String entitySetName,
+      @PathParam("entitySet") String entitySetName,
       @PathParam("id") String id,
       @QueryParam("$format") String format,
       @QueryParam("$callback") String callback,

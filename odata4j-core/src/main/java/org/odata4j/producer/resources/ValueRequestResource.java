@@ -31,7 +31,7 @@ public class ValueRequestResource extends BaseResource {
       @Context UriInfo uriInfo,
       @Context ContextResolver<ODataProducer> producerResolver,
       @Context SecurityContext securityContext,
-      @PathParam("entitySetName") String entitySetName,
+      @PathParam("entitySet") String entitySetName,
       @PathParam("id") String id,
       @QueryParam("$expand") String expand,
       @QueryParam("$select") String select) {

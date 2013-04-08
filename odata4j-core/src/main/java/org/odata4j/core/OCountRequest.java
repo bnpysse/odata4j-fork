@@ -10,7 +10,7 @@ public interface OCountRequest {
   /**
    * Sets the name of the entity-set to count.
    *
-   * @param entitySetName  the name of the entity collection
+   * @param entitySet  the name of the entity collection
    * @return the count-request builder
    */
   OCountRequest entitySetName(String entitySetName);

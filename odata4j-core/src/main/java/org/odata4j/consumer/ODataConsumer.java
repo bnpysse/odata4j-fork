@@ -217,7 +217,7 @@ public interface ODataConsumer {
    *
    * <p>The entity-request builder returned can be used for further navigation.  Call {@link OEntityRequest#execute()} to issue request.</p>
    *
-   * @param entitySetName  the name of the entity-set
+   * @param entitySet  the name of the entity-set
    * @param keyValue  the entity-key value
    * @return a new entity-request builder
    */
@@ -238,7 +238,7 @@ public interface ODataConsumer {
    *
    * <p>The entity-request builder returned can be used for further navigation.  Call {@link OEntityRequest#execute()} to issue request.</p>
    *
-   * @param entitySetName  the name of the entity-set
+   * @param entitySet  the name of the entity-set
    * @param key  the entity-key
    * @return a new entity-request builder
    */
@@ -251,7 +251,7 @@ public interface ODataConsumer {
    *
    * @param <T>  the entity representation as a java type
    * @param entityType  the entity representation as a java type
-   * @param entitySetName  the name of the entity-set
+   * @param entitySet  the name of the entity-set
    * @param keyValue  the entity-key value
    * @return a new entity-request builder
    */
@@ -264,7 +264,7 @@ public interface ODataConsumer {
    *
    * @param <T>  the entity representation as a java type
    * @param entityType   the entity representation as a java type
-   * @param entitySetName  the name of the entity-set
+   * @param entitySet  the name of the entity-set
    * @param key  the entity-key
    * @return a new entity-request builder
    */
@@ -323,7 +323,7 @@ public interface ODataConsumer {
    *
    * <p>The create-request builder returned can be used to construct the new entity.  Call {@link OCreateRequest#execute()} to issue request.</p>
    *
-   * @param entitySetName  the name of the entity-set
+   * @param entitySet  the name of the entity-set
    * @return a new create-request builder
    */
   OCreateRequest<OEntity> createEntity(String entitySetName);
@@ -353,7 +353,7 @@ public interface ODataConsumer {
    *
    * <p>The modification-request builder returned can be used to modify the new entity.  Call {@link OModifyRequest#execute()} to issue request.</p>
    *
-   * @param entitySetName  the entity identity entity-set name
+   * @param entitySet  the entity identity entity-set name
    * @param keyValue  the entity identity key value
    * @return a new modification-request builder
    */
@@ -364,7 +364,7 @@ public interface ODataConsumer {
    *
    * <p>The modification-request builder returned can be used to modify the new entity.  Call {@link OModifyRequest#execute()} to issue request.</p>
    *
-   * @param entitySetName  the entity identity entity-set name
+   * @param entitySet  the entity identity entity-set name
    * @param key  the entity identity key
    * @return a new modification-request builder
    */
@@ -385,7 +385,7 @@ public interface ODataConsumer {
    *
    * <p>The delete-request builder returned can be used for further navigation.  Call {@link OEntityRequest#execute()} to issue request.</p>
    *
-   * @param entitySetName  the entity identity entity-set name
+   * @param entitySet  the entity identity entity-set name
    * @param keyValue  the entity identity key value
    * @return a new entity-request builder
    */
@@ -396,7 +396,7 @@ public interface ODataConsumer {
    *
    * <p>The delete-request builder returned can be used for further navigation.  Call {@link OEntityRequest#execute()} to issue request.</p>
    *
-   * @param entitySetName  the entity identity entity-set name
+   * @param entitySet  the entity identity entity-set name
    * @param key  the entity identity key
    * @return a new entity-request builder
    */
@@ -415,7 +415,7 @@ public interface ODataConsumer {
   /**
    * Returns a single value request which can be extended by query options. The execution of the request will return a single value for $count.
    *
-   * @param entitySetName  the entity identity entity-set name
+   * @param entitySet  the entity identity entity-set name
    * @return a new count-request builder
    */
   OCountRequest getEntitiesCount(String entitySetName);
