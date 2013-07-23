@@ -35,6 +35,8 @@ import org.odata4j.format.SingleLink;
 import org.odata4j.internal.BOMWorkaroundReader;
 import org.odata4j.stax2.XMLEventReader2;
 import org.odata4j.stax2.util.StaxUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientHandlerException;
@@ -56,10 +58,11 @@ class ODataJerseyClient extends AbstractODataClient {
   public ODataJerseyClient(FormatType type, JerseyClientFactory clientFactory, OClientBehavior... behaviors) {
     super(type);
     this.behaviors = Enumerable.create(requiredBehaviors).concat(Enumerable.create(behaviors)).toArray(OClientBehavior.class);
-    this.client = JerseyClientUtil.newClient(clientFactory, behaviors);
+    client = JerseyClientUtil.newClient(clientFactory, behaviors);
   }
 
-  public Reader getFeedReader(ODataClientResponse response) {
+  @Override
+public Reader getFeedReader(ODataClientResponse response) {
     ClientResponse clientResponse = ((JerseyClientResponse) response).getClientResponse();
     if (ODataConsumer.dump.responseBody()) {
       String textEntity = clientResponse.getEntity(String.class);
@@ -75,59 +78,68 @@ class ODataJerseyClient extends AbstractODataClient {
     }
   }
 
-  public String requestBody(FormatType formatType, ODataClientRequest request) throws ODataProducerException {
+  @Override
+public String requestBody(FormatType formatType, ODataClientRequest request) throws ODataProducerException {
     ODataClientResponse response = doRequest(formatType, request, Status.OK);
     String entity = ((JerseyClientResponse) response).getClientResponse().getEntity(String.class);
     response.close();
     return entity;
   }
 
-  @SuppressWarnings("unchecked")
+  @Override
+@SuppressWarnings("unchecked")
   protected ODataClientResponse doRequest(FormatType reqType, ODataClientRequest request, StatusType... expectedResponseStatus) throws ODataProducerException {
 
     if (behaviors != null) {
-      for (OClientBehavior behavior : behaviors)
-        request = behavior.transform(request);
+      for (OClientBehavior behavior : behaviors) {
+		request = behavior.transform(request);
+	}
     }
 
     WebResource webResource = JerseyClientUtil.resource(client, request.getUrl(), behaviors);
 
     // set query params
-    for (String qpn : request.getQueryParams().keySet())
-      webResource = webResource.queryParam(qpn, request.getQueryParams().get(qpn));
+    for (String qpn : request.getQueryParams().keySet()) {
+		webResource = webResource.queryParam(qpn, request.getQueryParams().get(qpn));
+	}
 
     WebResource.Builder b = webResource.getRequestBuilder();
 
     // set headers
     b = b.accept(reqType.getAcceptableMediaTypes());
 
-    for (String header : request.getHeaders().keySet())
-      b.header(header, request.getHeaders().get(header));
-    if (!request.getHeaders().containsKey(ODataConstants.Headers.USER_AGENT))
-      b.header(ODataConstants.Headers.USER_AGENT, "odata4j.org");
+    for (String header : request.getHeaders().keySet()) {
+		b.header(header, request.getHeaders().get(header));
+	}
+    if (!request.getHeaders().containsKey(ODataConstants.Headers.USER_AGENT)) {
+		b.header(ODataConstants.Headers.USER_AGENT, "odata4j.org");
+	}
 
-    if (ODataConsumer.dump.requestHeaders())
-      dumpHeaders(request, webResource, b);
+    if (ODataConsumer.dump.requestHeaders()) {
+		dumpHeaders(request, webResource, b);
+	}
 
     // request body
     if (request.getPayload() != null) {
 
       Class<?> payloadClass;
-      if (request.getPayload() instanceof Entry)
-        payloadClass = Entry.class;
-      else if (request.getPayload() instanceof SingleLink)
-        payloadClass = SingleLink.class;
-      else
-        throw new IllegalArgumentException("Unsupported payload: " + request.getPayload());
+      if (request.getPayload() instanceof Entry) {
+		payloadClass = Entry.class;
+	} else if (request.getPayload() instanceof SingleLink) {
+		payloadClass = SingleLink.class;
+	} else {
+		throw new IllegalArgumentException("Unsupported payload: " + request.getPayload());
+	}
 
       StringWriter sw = new StringWriter();
       FormatWriter<Object> fw = (FormatWriter<Object>)
-          FormatWriterFactory.getFormatWriter(payloadClass, null, this.getFormatType().toString(), null);
+          FormatWriterFactory.getFormatWriter(payloadClass, null, getFormatType().toString(), null);
       fw.write(null, sw, request.getPayload());
 
       String entity = sw.toString();
-      if (ODataConsumer.dump.requestBody())
-        dump(entity);
+      if (ODataConsumer.dump.requestBody()) {
+		dump(entity);
+	}
 
       // allow the client to override the default format writer content-type
       String contentType = request.getHeaders().containsKey(ODataConstants.Headers.CONTENT_TYPE)
@@ -145,12 +157,15 @@ class ODataJerseyClient extends AbstractODataClient {
       Throwables.propagate(e);
     }
 
-    if (ODataConsumer.dump.responseHeaders())
-      dumpHeaders(response);
+    if (ODataConsumer.dump.responseHeaders()) {
+		dumpHeaders(response);
+	}
     StatusType status = response.getClientResponseStatus();
-    for (StatusType expStatus : expectedResponseStatus)
-      if (expStatus.getStatusCode() == status.getStatusCode())
-        return new JerseyClientResponse(response);
+    for (StatusType expStatus : expectedResponseStatus) {
+		if (expStatus.getStatusCode() == status.getStatusCode()) {
+			return new JerseyClientResponse(response);
+		}
+	}
 
     // the server responded with an unexpected status
     RuntimeException exception;
@@ -168,7 +183,8 @@ class ODataJerseyClient extends AbstractODataClient {
     throw exception;
   }
 
-  protected XMLEventReader2 toXml(ODataClientResponse response) {
+  @Override
+protected XMLEventReader2 toXml(ODataClientResponse response) {
     ClientResponse clientResponse = ((JerseyClientResponse) response).getClientResponse();
 
     if (ODataConsumer.dump.responseBody()) {
@@ -204,8 +220,9 @@ class ODataJerseyClient extends AbstractODataClient {
 
   @SuppressWarnings("unchecked")
   private MultivaluedMap<String, Object> getRequestHeaders(WebResource.Builder b) {
-    if (dontTryRequestHeaders)
-      return null;
+    if (dontTryRequestHeaders) {
+		return null;
+	}
 
     //  protected MultivaluedMap<String, Object> metadata;
     try {
@@ -226,15 +243,19 @@ class ODataJerseyClient extends AbstractODataClient {
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   private void dump(MultivaluedMap headers) {
-    if (headers == null)
-      return;
+    if (headers == null) {
+		return;
+	}
 
-    for (Object header : headers.keySet())
-      dump(header + ": " + headers.getFirst(header));
+    for (Object header : headers.keySet()) {
+		dump(header + ": " + headers.getFirst(header));
+	}
   }
 
+  private static final Logger log = LoggerFactory.getLogger(ODataJerseyClient.class);
+
   private static void dump(String message) {
-    System.out.println(message);
+    log.debug(message);
   }
 
 }
