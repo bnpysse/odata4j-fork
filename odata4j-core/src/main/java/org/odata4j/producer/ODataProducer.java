@@ -39,7 +39,7 @@ public interface ODataProducer extends OExtensible<ODataProducer> {
   /**
    * Gets all the entities for a given set matching the query information.
    *
-   * @param entitySet  the entity-set name for entities to return
+   * @param entitySetName  the entity-set name for entities to return
    * @param queryInfo  the additional constraints to apply to the entities
    * @return a packaged collection of entities to pass back to the client
    */
@@ -48,7 +48,7 @@ public interface ODataProducer extends OExtensible<ODataProducer> {
   /**
    * Gets the count of all the entities for a given set matching the query information.
    *
-   * @param entitySet  the entity-set name for entities whose count is returned
+   * @param entitySetName  the entity-set name for entities whose count is returned
    * @param queryInfo  the additional constraints to apply to the entities
    * @return count of the entities
    */
@@ -57,7 +57,7 @@ public interface ODataProducer extends OExtensible<ODataProducer> {
   /**
    * Obtains a single entity based on its type and key.
    *
-   * @param entitySet  the entity-set name for entities to return
+   * @param entitySetName  the entity-set name for entities to return
    * @param entityKey  the unique entity-key of the entity to start with
    * @param queryInfo  the additional constraints applicable to single-entity queries
    * @return the resulting entity
@@ -68,7 +68,7 @@ public interface ODataProducer extends OExtensible<ODataProducer> {
    * Given a specific entity, follow one of its navigation properties, applying constraints as appropriate.
    * Return the resulting entity, entities, or property value.
    *
-   * @param entitySet  the entity-set of the entity to start with
+   * @param entitySetName  the entity-set of the entity to start with
    * @param entityKey  the unique entity-key of the entity to start with
    * @param navProp  the navigation property to follow
    * @param queryInfo  additional constraints to apply to the result
@@ -80,7 +80,7 @@ public interface ODataProducer extends OExtensible<ODataProducer> {
    * Given a specific entity, follow one of its navigation properties, applying constraints as appropriate.
    * Return the count of the resulting entities.
    *
-   * @param entitySet  the entity-set of the entity to start with
+   * @param entitySetName  the entity-set of the entity to start with
    * @param entityKey  the unique entity-key of the entity to start with
    * @param navProp  the navigation property to follow
    * @param queryInfo  additional constraints to apply to the result
@@ -96,7 +96,7 @@ public interface ODataProducer extends OExtensible<ODataProducer> {
   /**
    * Creates a new OData entity.
    *
-   * @param entitySet  the entity-set name
+   * @param entitySetName  the entity-set name
    * @param entity  the request entity sent from the client
    * @return the newly-created entity, fully populated with the key and default properties
    *
@@ -107,7 +107,7 @@ public interface ODataProducer extends OExtensible<ODataProducer> {
   /**
    * Creates a new OData entity as a reference of an existing entity, implicitly linked to the existing entity by a navigation property.
    *
-   * @param entitySet  the entity-set name of the existing entity
+   * @param entitySetName  the entity-set name of the existing entity
    * @param entityKey  the entity-key of the existing entity
    * @param navProp  the navigation property off of the existing entity
    * @param entity  the request entity sent from the client
@@ -120,7 +120,7 @@ public interface ODataProducer extends OExtensible<ODataProducer> {
   /**
    * Deletes an existing entity.
    *
-   * @param entitySet  the entity-set name of the entity
+   * @param entitySetName  the entity-set name of the entity
    * @param entityKey  the entity-key of the entity
    *
    * @see <a href="http://www.odata.org/developers/protocols/operations#DeletingEntries">[odata.org] Deleting Entries</a>
@@ -130,7 +130,7 @@ public interface ODataProducer extends OExtensible<ODataProducer> {
   /**
    * Modifies an existing entity using merge semantics.
    *
-   * @param entitySet  the entity-set name
+   * @param entitySetName  the entity-set name
    * @param entity  the entity modifications sent from the client
    *
    * @see <a href="http://www.odata.org/developers/protocols/operations#UpdatingEntries">[odata.org] Updating Entries</a>
@@ -140,7 +140,7 @@ public interface ODataProducer extends OExtensible<ODataProducer> {
   /**
    * Modifies an existing entity using update semantics.
    *
-   * @param entitySet  the entity-set name
+   * @param entitySetName  the entity-set name
    * @param entity  the entity modifications sent from the client
    *
    * @see <a href="http://www.odata.org/developers/protocols/operations#UpdatingEntries">[odata.org] Updating Entries</a>

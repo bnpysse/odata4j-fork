@@ -46,7 +46,7 @@ import org.odata4j.producer.ODataProducer;
 import org.odata4j.producer.QueryInfo;
 
 // ignoreParens below is there to trim the parentheses from the entity set name when they are present - e.g. '/my.svc/Users()'.
-@Path("{entitySet: [^/()]+?}{ignoreParens: (?:\\(\\))?}")
+@Path("{entitySetName: [^/()]+?}{ignoreParens: (?:\\(\\))?}")
 public class EntitiesRequestResource extends BaseResource {
 
   private static final Logger log = Logger.getLogger(EntitiesRequestResource.class.getName());
@@ -60,14 +60,14 @@ public class EntitiesRequestResource extends BaseResource {
       @Context SecurityContext securityContext,
       @QueryParam("$format") String format,
       @QueryParam("$callback") String callback,
-      @PathParam("entitySet") String entitySetName,
+      @PathParam("entitySetName") String entitySetName,
       InputStream payload) throws Exception {
 
     // visual studio will send a soap mex request
     if (entitySetName.equals("mex") && httpHeaders.getMediaType() != null && httpHeaders.getMediaType().toString().startsWith("application/soap+xml"))
       throw new UnsupportedMediaTypeException("SOAP mex requests are not supported");
 
-    log("createEntity", "entitySet", entitySetName);
+    log("createEntity", "entitySetName", entitySetName);
 
     ODataProducer producer = producerResolver.getContext(ODataProducer.class);
 
@@ -150,7 +150,7 @@ public class EntitiesRequestResource extends BaseResource {
       InputStream payload,
       ODataContext odataContext) throws Exception {
 
-    log("createMediaLinkEntity", "entitySet", entitySet.getName());
+    log("createMediaLinkEntity", "entitySetName", entitySet.getName());
 
     OEntity mle = super.createOrUpdateMediaLinkEntry(httpHeaders, uriInfo, entitySet, producer, payload, null, odataContext);
 
@@ -172,7 +172,7 @@ public class EntitiesRequestResource extends BaseResource {
       @Context SecurityContext securityContext,
       @QueryParam("$format") String format,
       @QueryParam("$callback") String callback,
-      @PathParam("entitySet") String functionName,
+      @PathParam("entitySetName") String functionName,
       InputStream payload) throws Exception {
 
     Response response;
@@ -203,7 +203,7 @@ public class EntitiesRequestResource extends BaseResource {
       @Context SecurityContext securityContext,
       @QueryParam("$format") String format,
       @QueryParam("$callback") String callback,
-      @PathParam("entitySet") String functionName,
+      @PathParam("entitySetName") String functionName,
       InputStream payload) throws Exception {
 
     Response response;
@@ -235,7 +235,7 @@ public class EntitiesRequestResource extends BaseResource {
       @Context UriInfo uriInfo,
       @Context ContextResolver<ODataProducer> producerResolver,
       @Context SecurityContext securityContext,
-      @PathParam("entitySet") String entitySetName,
+      @PathParam("entitySetName") String entitySetName,
       @QueryParam("$inlinecount") String inlineCount,
       @QueryParam("$top") String top,
       @QueryParam("$skip") String skip,
@@ -249,7 +249,7 @@ public class EntitiesRequestResource extends BaseResource {
       throws Exception {
 
     log("getEntities",
-        "entitySet", entitySetName,
+        "entitySetName", entitySetName,
         "inlineCount", inlineCount,
         "top", top,
         "skip", skip,
@@ -278,7 +278,7 @@ public class EntitiesRequestResource extends BaseResource {
       @Context UriInfo uriInfo,
       @Context ContextResolver<ODataProducer> producerResolver,
       @Context SecurityContext securityContext,
-      @PathParam("entitySet") String entitySetName,
+      @PathParam("entitySetName") String entitySetName,
       @PathParam("count") String count,
       @QueryParam("$inlinecount") String inlineCount,
       @QueryParam("$top") String top,
@@ -292,7 +292,7 @@ public class EntitiesRequestResource extends BaseResource {
       @QueryParam("$select") String select) throws Exception {
 
     log("getEntitiesCount",
-        "entitySet", entitySetName,
+        "entitySetName", entitySetName,
         "inlineCount", inlineCount,
         "top", top,
         "skip", skip,

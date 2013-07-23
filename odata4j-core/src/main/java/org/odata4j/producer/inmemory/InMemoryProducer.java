@@ -196,7 +196,7 @@ public class InMemoryProducer implements ODataProducer {
    * Registers a new entity based on a POJO, with support for composite keys.
    *
    * @param entityClass  the class of the entities that are to be stored in the set
-   * @param entitySet  the alias the set will be known by; this is what is used in the OData url
+   * @param entitySetName  the alias the set will be known by; this is what is used in the OData url
    * @param get  a function to iterate over the elements in the set
    * @param keys  one or more keys for the entity
    */
@@ -208,7 +208,7 @@ public class InMemoryProducer implements ODataProducer {
    * Registers a new entity based on a POJO, with support for composite keys.
    *
    * @param entityClass  the class of the entities that are to be stored in the set
-   * @param entitySet  the alias the set will be known by; this is what is used in the OData url
+   * @param entitySetName  the alias the set will be known by; this is what is used in the OData url
    * @param entityTypeName  type name of the entity
    * @param get  a function to iterate over the elements in the set
    * @param keys  one or more keys for the entity
@@ -234,7 +234,7 @@ public class InMemoryProducer implements ODataProducer {
    *
    * @param entityClass  the class of the entities that are to be stored in the set
    * @param propertyModel a way to get/set properties on the POJO
-   * @param entitySet  the alias the set will be known by; this is what is used in the ODATA URL
+   * @param entitySetName  the alias the set will be known by; this is what is used in the ODATA URL
    * @param get  a function to iterate over the elements in the set
    * @param keys  one or more keys for the entity
    */

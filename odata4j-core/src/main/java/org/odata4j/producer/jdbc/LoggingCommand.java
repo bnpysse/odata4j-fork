@@ -31,23 +31,23 @@ public class LoggingCommand implements Command<ProducerCommandContext<?>> {
     } else if (context instanceof GetEntitiesCommandContext) {
       GetEntitiesCommandContext c = (GetEntitiesCommandContext) context;
       log("getEntities",
-          "entitySet", c.getEntitySetName(),
+          "entitySetName", c.getEntitySetName(),
           "queryInfo", c.getQueryInfo());
     } else if (context instanceof GetEntityCommandContext) {
       GetEntityCommandContext c = (GetEntityCommandContext) context;
       log("getEntity",
-          "entitySet", c.getEntitySetName(),
+          "entitySetName", c.getEntitySetName(),
           "entityKey", c.getEntityKey(),
           "queryInfo", c.getQueryInfo());
     } else if (context instanceof CreateEntityCommandContext) {
       CreateEntityCommandContext c = (CreateEntityCommandContext) context;
       log("createEntity",
-          "entitySet", c.getEntitySetName(),
+          "entitySetName", c.getEntitySetName(),
           "entity", c.getEntity());
     } else if (context instanceof DeleteEntityCommandContext) {
       DeleteEntityCommandContext c = (DeleteEntityCommandContext) context;
       log("deleteEntity",
-          "entitySet", c.getEntitySetName(),
+          "entitySetName", c.getEntitySetName(),
           "entityKey", c.getEntityKey());
     } else {
       throw new UnsupportedOperationException("TODO implement logging for : " + context);

@@ -10,7 +10,7 @@ public class OEntityIds {
   /**
    * Creates an entity-id.
    *
-   * @param entitySet  the entity-set
+   * @param entitySetName  the entity-set
    * @param entityKeyValues  the entity-key as one or more values
    * @return the entity-id
    */
@@ -21,7 +21,7 @@ public class OEntityIds {
   /**
    * Creates an entity-id.
    *
-   * @param entitySet  the entity-set
+   * @param entitySetName  the entity-set
    * @param entityKey  the entity-key
    * @return the entity-id
    */

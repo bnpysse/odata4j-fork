@@ -48,7 +48,7 @@ public class PropertyRequestResource extends BaseResource {
   @PUT
   public Response updateEntity(
       @Context ContextResolver<ODataProducer> producerResolver,
-      @PathParam("entitySet") String entitySetName,
+      @PathParam("entitySetName") String entitySetName,
       @PathParam("id") String id,
       @PathParam("navProp") String navProp) {
 
@@ -62,7 +62,7 @@ public class PropertyRequestResource extends BaseResource {
       @Context UriInfo uriInfo,
       @Context ContextResolver<ODataProducer> producerResolver,
       @Context SecurityContext securityContext,
-      @PathParam("entitySet") String entitySetName,
+      @PathParam("entitySetName") String entitySetName,
       @PathParam("id") String id,
       @PathParam("navProp") String navProp,
       String payload) throws Exception {
@@ -115,7 +115,7 @@ public class PropertyRequestResource extends BaseResource {
   @DELETE
   public Response deleteEntity(
       @Context ContextResolver<ODataProducer> producerResolver,
-      @PathParam("entitySet") String entitySetName,
+      @PathParam("entitySetName") String entitySetName,
       @PathParam("id") String id,
       @PathParam("navProp") String navProp) {
     throw new NotImplementedException("Not supported yet.");
@@ -131,7 +131,7 @@ public class PropertyRequestResource extends BaseResource {
       @Context UriInfo uriInfo,
       @Context ContextResolver<ODataProducer> producerResolver,
       @Context SecurityContext securityContext,
-      @PathParam("entitySet") String entitySetName,
+      @PathParam("entitySetName") String entitySetName,
       @PathParam("id") String id,
       @PathParam("navProp") String navProp,
       @QueryParam("$inlinecount") String inlineCount,
